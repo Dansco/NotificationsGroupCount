@@ -1,27 +1,14 @@
-name: Makefile CI
+export TARGET = iphone:clang:14.5:14.5
+INSTALL_TARGET_PROCESSES = SpringBoard
+GO_EASY_ON_ME = 1
+ARCHS = arm64 arm64e
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+include $(THEOS)/makefiles/common.mk
 
-jobs:
-  build:
+TWEAK_NAME = NotificationsGroupCount
 
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: configure
-      run: ./configure
-
-    - name: Install dependencies
-      run: make
-
-    - name: Run check
-      run: make check
-
-    - name: Run distcheck
-      run: make distcheck
+NotificationsGroupCount_FILES = Tweak.xm NGCBadgeView.m
+NotificationsGroupCount_CFLAGS = -fobjc-arc
+include $(THEOS_MAKE_PATH)/tweak.mk
+SUBPROJECTS += notificationsgroupcount
+include $(THEOS_MAKE_PATH)/aggregate.mk
